@@ -30,4 +30,20 @@ SpeechCorpus.transformers = {
     [SpeechCorpus.TRANSFORMERS_HASH_TUPLE]: transformToHashTuple
 }
 
+const cleaners = new Set()
+SpeechCorpus.clean = {}
+SpeechCorpus.clean.register = (fn) => cleaners.add(fn)
+SpeechCorpus.clean.run = (data) => {
+    const list = Array.from(data)
+    const fns = Array.from(cleaners)
+    return list.map((entry, index, self) => {
+        let cleaned = entry
+        for (const fn of fns) {
+            cleaned = fn(cleaned, index, self)
+        }
+        return cleaned
+    })
+}
+
+
 SpeechCorpus.build = output
